@@ -65,7 +65,23 @@ class TournamentApp:
             self.team_manager.add_team(name, date, group)
 
     def _input_matches(self):
-        pass
+        self._clear_terminal()
+        print("Enter match information (format: <Team A> <Team B> <Goals A> <Goals B>):")
+        while True:
+            line = input()
+            if line == '':
+                break
+            
+            team_a, team_b, goals_a, goals_b = line.rsplit(' ', 3)
+            goals_a = int(goals_a)
+            goals_b = int(goals_b)
+            if not self.team_manager.team_exists(team_a):
+                print(f"\nTeam '{team_a}' does not exist.\n")
+                continue
+            if not self.team_manager.team_exists(team_b):
+                print(f"\nTeam '{team_b}' does not exist.\n")
+                continue
+            self.match_manager.add_match(team_a, team_b, goals_a, goals_b)
 
     def _display_rankings(self):
         pass
@@ -85,10 +101,22 @@ class TournamentApp:
         self.team_manager.edit_team(old_name, name, date, group)
 
     def _edit_match(self):
-        pass
+        self._clear_terminal()
+        print("Enter match information (format: <Match ID> <Team A> <Team B> <Goals A> <Goals B>):")
+        line = input()
+        match_id, team_a, team_b, goals_a, goals_b = line.rsplit(' ', 4)
+        match_id = int(match_id)
+        goals_a = int(goals_a)
+        goals_b = int(goals_b)
+        if not self.match_manager.match_exists(match_id):
+            print(f"\nMatch ID '{match_id}' does not exist.\n")
+            return
+        self.match_manager.edit_match(match_id, team_a, team_b, goals_a, goals_b)
 
     def _clear_data(self):
-        pass
+        self.team_manager.delete_all_teams()
+        self.match_manager.delete_all_matches()
+        print("All data cleared.")
 
 
 if __name__ == "__main__":
