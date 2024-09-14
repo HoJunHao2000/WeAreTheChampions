@@ -19,7 +19,6 @@ class LoggingManager(ILoggingManager):
         try:
             response = requests.post(f"{self.log_service_url}/logs", json=payload)
             response.raise_for_status()
-            print("Log message added successfully.")
         except RequestException as e:
             print(f"Failed to log message. Error: {e}")
     

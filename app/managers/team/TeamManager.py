@@ -17,9 +17,7 @@ class TeamManager(ITeamManager):
             "group": group
         }
         try:
-            print(self.team_service_url)
             response = requests.post(f"{self.team_service_url}/teams", json=payload)
-            print(f"Team '{name}' added successfully.")
         except RequestException as e:
             print(f"Failed to add team '{name}'. Error: {e}")
 

@@ -11,7 +11,7 @@ services:
       TEAM_SERVICE_URL: http://team_service:5001
       MATCH_SERVICE_URL: http://match_service:5002
       RANKING_SERVICE_URL: http://ranking_service:5003
-      LOG_SERVICE_URL: http://log_service:5004
+      LOG_SERVICE_URL: http://logging_service:5004
     volumes:
       - ./app:/app
     stdin_open: true
@@ -20,7 +20,7 @@ services:
       - team_service
       - match_service
       # - ranking_service
-      # - log_service
+      - logging_service
 
   team_service:
     build:
@@ -51,16 +51,16 @@ services:
   #   ports:
   #     - "5003:5003"
 
-  # log_service:
-  #   build:
-  #     context: ./log_service
-  #   container_name: log_service
-  #   ports:
-  #     - "5004:5004"
-  #   environment:
-  #     DATABASE_URL: postgresql://log_db_user:log_db_password@log_db:5432/log_db  # Internal port
-  #   depends_on:
-  #     - log_db
+  logging_service:
+    build:
+      context: ./logging_service
+    container_name: logging_service
+    ports:
+      - "5004:5004"
+    environment:
+      DATABASE_URL: postgresql://log_db_user:log_db_password@log_db:5432/log_db  # Internal port
+    depends_on:
+      - log_db
 
   team_db:
     image: postgres:13
@@ -86,17 +86,17 @@ services:
     ports:
       - "5434:5432"
 
-  # log_db:
-  #   image: postgres:13
-  #   container_name: log_db
-  #   environment:
-  #     POSTGRES_USER: log_db_user
-  #     POSTGRES_PASSWORD: log_db_password
-  #     POSTGRES_DB: log_db
-  #   volumes:
-  #     - log_db_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5435:5432"
+  log_db:
+    image: postgres:13
+    container_name: log_db
+    environment:
+      POSTGRES_USER: log_db_user
+      POSTGRES_PASSWORD: log_db_password
+      POSTGRES_DB: log_db
+    volumes:
+      - log_db_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
 
 volumes:
   team_db_data:

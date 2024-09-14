@@ -20,7 +20,6 @@ class MatchManager(IMatchManager):
         try:
             response = requests.post(f"{self.match_service_url}/matches", json=payload)
             response.raise_for_status()
-            print(f"Match between '{team_a}' and '{team_b}' added successfully.")
         except RequestException as e:
             print(f"Failed to add match between '{team_a}' and '{team_b}'. Error: {e}")
 
