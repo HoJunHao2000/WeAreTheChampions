@@ -6,6 +6,10 @@ class ITeamManager(ABC):
         pass
 
     @abstractmethod
+    def all_teams(self) -> list:
+        pass
+
+    @abstractmethod
     def edit_team(self, old_name: str, name: str, date: str, group: int):
         pass
 

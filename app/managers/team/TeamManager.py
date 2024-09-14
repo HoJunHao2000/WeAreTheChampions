@@ -24,6 +24,16 @@ class TeamManager(ITeamManager):
         except RequestException as e:
             print(f"Failed to add team '{name}'. Error: {e}")
 
+    def all_teams(self) -> list:
+        """Retrieves all teams by making a GET request to the team service API."""
+        try:
+            response = requests.get(f"{self.team_service_url}/teams")
+            response.raise_for_status()
+            return response.json()
+        except RequestException as e:
+            print(f"Failed to retrieve teams. Error: {e}")
+            return []
+
     def edit_team(self, old_name: str, name: str, date: str, group: int):
         """Edits team details by making a PUT request to the team service API."""
         payload = {

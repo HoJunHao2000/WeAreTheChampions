@@ -84,7 +84,17 @@ class TournamentApp:
             self.match_manager.add_match(team_a, team_b, goals_a, goals_b)
 
     def _display_rankings(self):
-        pass
+        self._clear_terminal()
+        print("Rankings:")
+        matches = self.match_manager.all_matches()
+        teams = self.team_manager.all_teams()
+        rankings = self.ranking_manager.calculate_rankings(matches, teams)
+        for group, ranked_teams in rankings.items():
+            print(f"\nRankings for {group}:")
+            for rank, team_info in enumerate(ranked_teams, start=1):
+                print(f"{rank}. {team_info['team']} - {team_info['total_points']} points, "
+                    f"{team_info['total_goals']} goals, "
+                    f"Registered: {team_info['registration_date']}")
 
     def _retrieve_team_details(self):    
         pass
