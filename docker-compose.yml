@@ -19,7 +19,7 @@ services:
     depends_on:
       - team_service
       - match_service
-      # - ranking_service
+      - ranking_service
       - logging_service
 
   team_service:
@@ -44,12 +44,12 @@ services:
     depends_on:
       - match_db
 
-  # ranking_service:
-  #   build:
-  #     context: ./ranking_service
-  #   container_name: ranking_service
-  #   ports:
-  #     - "5003:5003"
+  ranking_service:
+    build:
+      context: ./ranking_service
+    container_name: ranking_service
+    ports:
+      - "5003:5003"
 
   logging_service:
     build:

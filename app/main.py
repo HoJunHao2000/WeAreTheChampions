@@ -117,15 +117,23 @@ class TournamentApp:
             rankings = self.ranking_manager.calculate_rankings(matches, teams)
 
             for group, ranked_teams in rankings.items():
-                print(f"\nRankings for {group}:")
+                print(f"\nRankings for Group {group}:")
+                qualified_teams = ranked_teams[:4]  # Top 4 teams
                 for rank, team_info in enumerate(ranked_teams, start=1):
+                    status = "Qualified" if rank <= 4 else "Not Qualified"
                     print(f"{rank}. {team_info['team']} - {team_info['total_points']} points, "
-                          f"{team_info['total_goals']} goals, "
-                          f"Registered: {team_info['registration_date']}")
+                        f"{team_info['total_goals']} goals, "
+                        f"Registered: {team_info['registration_date']} ({status})")
+
+                # Display the qualified teams separately
+                print("\nTeams qualified for the next round:")
+                for team_info in qualified_teams:
+                    print(f"{team_info['team']}")
 
             line = input("\nPress Enter to go back to the main menu or type anything to display rankings again: ")
             if line == '':
                 break
+
 
     def _retrieve_team_details(self):
         print("Enter team name to retrieve details:")
