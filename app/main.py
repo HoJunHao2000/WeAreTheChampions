@@ -63,6 +63,7 @@ class TournamentApp:
                 print(f"\nTeam '{name}' already exists.\n")
                 continue
             self.team_manager.add_team(name, date, group)
+            self.logging_manager.log(f"Added team '{name}' with registration date '{date}' and group number {group}.")
 
     def _input_matches(self):
         self._clear_terminal()
@@ -77,11 +78,15 @@ class TournamentApp:
             goals_b = int(goals_b)
             if not self.team_manager.team_exists(team_a):
                 print(f"\nTeam '{team_a}' does not exist.\n")
+                self.logging_manager.log(f"Attempted to add match with non-existing team '{team_a}'.")
                 continue
             if not self.team_manager.team_exists(team_b):
                 print(f"\nTeam '{team_b}' does not exist.\n")
+                self.logging_manager.log(f"Attempted to add match with non-existing team '{team_b}'.")
                 continue
             self.match_manager.add_match(team_a, team_b, goals_a, goals_b)
+            self.logging_manager.log(f"Added match between '{team_a}' and '{team_b}' with scores {goals_a}-{goals_b}.")
+
 
     def _display_rankings(self):
         self._clear_terminal()
@@ -96,8 +101,36 @@ class TournamentApp:
                     f"{team_info['total_goals']} goals, "
                     f"Registered: {team_info['registration_date']}")
 
-    def _retrieve_team_details(self):    
-        pass
+    def _retrieve_team_details(self):
+        self._clear_terminal()
+        print("Enter team name to retrieve details:")
+        team_name = input()
+        
+        # Retrieve team details from the team manager
+        team_details = self.team_manager.retrieve_team(team_name)
+        if team_details:
+            print(f"Team: {team_name}")
+            print(f"Date: {team_details['registration_date']}")
+            print(f"Group: {team_details['group']}")
+            
+            # Retrieve all matches from the match manager
+            all_matches = self.match_manager.all_matches()
+            
+            # Filter matches involving the specified team
+            team_matches = [
+                match for match in all_matches 
+                if match['team_a'] == team_name or match['team_b'] == team_name
+            ]
+            
+            print("Matches:")
+            if team_matches:
+                for match in team_matches:
+                    opponent = match['team_b'] if match['team_a'] == team_name else match['team_a']
+                    print(f"vs {opponent}: {match['goals_a']}-{match['goals_b']}")
+            else:
+                print("No matches found for this team.")
+        else:
+            print(f"Team '{team_name}' not found.")
 
     def _edit_team(self):
         self._clear_terminal()
@@ -107,8 +140,10 @@ class TournamentApp:
         group = int(group)
         if not self.team_manager.team_exists(old_name):
             print(f"\nTeam '{old_name}' does not exist.\n")
+            self.logging_manager.log(f"Attempted to edit non-existing team '{old_name}'.")
             return
         self.team_manager.edit_team(old_name, name, date, group)
+        self.logging_manager.log(f"Edited team '{old_name}' to new name '{name}', registration date '{date}', and group number {group}.")
 
     def _edit_match(self):
         self._clear_terminal()
@@ -120,13 +155,16 @@ class TournamentApp:
         goals_b = int(goals_b)
         if not self.match_manager.match_exists(match_id):
             print(f"\nMatch ID '{match_id}' does not exist.\n")
+            self.logging_manager.log(f"Attempted to edit non-existing match ID '{match_id}'.")
             return
         self.match_manager.edit_match(match_id, team_a, team_b, goals_a, goals_b)
+        self.logging_manager.log(f"Edited match ID '{match_id}' with new details: '{team_a}' vs '{team_b}' with scores {goals_a}-{goals_b}.")
 
     def _clear_data(self):
         self.team_manager.delete_all_teams()
         self.match_manager.delete_all_matches()
         print("All data cleared.")
+        self.logging_manager.log("Cleared all teams and matches data.")
 
 
 if __name__ == "__main__":
