@@ -50,7 +50,19 @@ class TournamentApp:
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def _input_teams(self):
-        pass
+        self._clear_terminal()
+        print("Enter team information (format: <Team name> <Registration date DD/MM> <Group number>):")
+        while True:
+            line = input()
+            if line == '':
+                break
+            
+            name, date, group = line.rsplit(' ', 2)
+            group = int(group)
+            if self.team_manager.team_exists(name):
+                print(f"\nTeam '{name}' already exists.\n")
+                continue
+            self.team_manager.add_team(name, date, group)
 
     def _input_matches(self):
         pass
@@ -62,10 +74,28 @@ class TournamentApp:
         pass
 
     def _edit_team(self):
-        pass
+        self._clear_terminal()
+        print("Enter team information (format: <Old team name> <New team name> <Registration date DD/MM> <Group number>):")
+        line = input()
+        old_name, name, date, group = line.rsplit(' ', 3)
+        group = int(group)
+        if not self.team_manager.team_exists(old_name):
+            print(f"\nTeam '{old_name}' does not exist.\n")
+            return
+        self.team_manager.edit_team(old_name, name, date, group)
 
     def _edit_match(self):
         pass
 
     def _clear_data(self):
         pass
+
+
+if __name__ == "__main__":
+    teamManager = TeamManager()
+    matchManager = MatchManager()
+    rankingManager = RankingManager()
+    loggingManager = LoggingManager()
+
+    app = TournamentApp(teamManager, matchManager, rankingManager, loggingManager)
+    app.main_menu()
