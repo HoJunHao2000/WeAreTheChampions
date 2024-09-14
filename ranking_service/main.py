@@ -52,31 +52,34 @@ def calculate_rankings(teams: List[Dict[str, Any]], matches: List[Dict[str, Any]
         team_b = match["team_b"]
         goals_a = match["goals_a"]
         goals_b = match["goals_b"]
-        match_id = match["id"]
 
-        if match_id not in rankings:
-            continue  # Skip matches that reference an unregistered group
+        # Find the group that both teams belong to (assuming they are in the same group)
+        group_a = next((team["group"] for team in teams if team["name"] == team_a), None)
+        group_b = next((team["group"] for team in teams if team["name"] == team_b), None)
+
+        if group_a != group_b or group_a is None:
+            continue  # Skip matches if teams are not in the same group or if teams don't exist
+
+        group = group_a  # Both teams are in the same group
 
         # Update goals scored
-        if team_a in rankings[match_id]:
-            rankings[match_id][team_a]['total_goals'] += goals_a
-        if team_b in rankings[match_id]:
-            rankings[match_id][team_b]['total_goals'] += goals_b
+        rankings[group][team_a]['total_goals'] += goals_a
+        rankings[group][team_b]['total_goals'] += goals_b
 
         # Determine match points and alternate points
         if goals_a > goals_b:
-            rankings[match_id][team_a]['total_points'] += 3
-            rankings[match_id][team_a]['alternate_points'] += 5
-            rankings[match_id][team_b]['alternate_points'] += 1
+            rankings[group][team_a]['total_points'] += 3
+            rankings[group][team_a]['alternate_points'] += 5
+            rankings[group][team_b]['alternate_points'] += 1
         elif goals_b > goals_a:
-            rankings[match_id][team_b]['total_points'] += 3
-            rankings[match_id][team_b]['alternate_points'] += 5
-            rankings[match_id][team_a]['alternate_points'] += 1
+            rankings[group][team_b]['total_points'] += 3
+            rankings[group][team_b]['alternate_points'] += 5
+            rankings[group][team_a]['alternate_points'] += 1
         else:
-            rankings[match_id][team_a]['total_points'] += 1
-            rankings[match_id][team_b]['total_points'] += 1
-            rankings[match_id][team_a]['alternate_points'] += 3
-            rankings[match_id][team_b]['alternate_points'] += 3
+            rankings[group][team_a]['total_points'] += 1
+            rankings[group][team_b]['total_points'] += 1
+            rankings[group][team_a]['alternate_points'] += 3
+            rankings[group][team_b]['alternate_points'] += 3
 
     # Group teams by their respective groups
     grouped_rankings = {}

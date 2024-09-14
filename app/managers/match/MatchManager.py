@@ -40,7 +40,6 @@ class MatchManager(IMatchManager):
             response.raise_for_status()
             return len(response.json()) > 0
         except RequestException as e:
-            print(f"Failed to check if match between '{team_a}' and '{team_b}' exists. Error: {e}")
             return False
 
     def edit_match(self, match_id: int, team_a: str, team_b: str, goals_a: int, goals_b: int):

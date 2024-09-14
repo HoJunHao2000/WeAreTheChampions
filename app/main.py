@@ -118,6 +118,7 @@ class TournamentApp:
         matches = self.match_manager.all_matches()
         teams = self.team_manager.all_teams()
         rankings = self.ranking_manager.calculate_rankings(matches, teams)
+        print(rankings)
 
         for group, ranked_teams in rankings.items():
             print(f"\nRankings for Group {group}:")
