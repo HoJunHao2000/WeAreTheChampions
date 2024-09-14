@@ -101,6 +101,11 @@ class TournamentApp:
                 print(f"\nTeam '{team_b}' does not exist.\n")
                 self.logging_manager.log(f"Attempted to add match with non-existing team '{team_b}'.")
                 continue
+            # add check if teams are in the same group
+            if not self.team_manager.is_same_group(team_a, team_b):
+                print(f"\nTeams '{team_a}' and '{team_b}' are not in the same group.\n")
+                self.logging_manager.log(f"Attempted to add match between teams '{team_a}' and '{team_b}' that are not in the same group.")
+                continue
             self.match_manager.add_match(team_a, team_b, goals_a, goals_b)
             self.logging_manager.log(f"Added match between '{team_a}' and '{team_b}' with scores {goals_a}-{goals_b}.")
 
@@ -129,7 +134,7 @@ class TournamentApp:
         team_details = self.team_manager.retrieve_team(team_name)
         if team_details:
             print(f"Team: {team_name}")
-            print(f"Date: {team_details['registration_date']}")
+            print(f"Date: {team_details['date']}")
             print(f"Group: {team_details['group']}")
 
             all_matches = self.match_manager.all_matches()
@@ -169,11 +174,29 @@ class TournamentApp:
                 print(f"\nTeam '{old_name}' does not exist.\n")
                 self.logging_manager.log(f"Attempted to edit non-existing team '{old_name}'.")
                 continue
+
+            if old_name != name and self.team_manager.team_exists(name):
+                print(f"\nTeam '{name}' already exists.\n")
+                continue
+
+            # update all matches with the new team name
+            all_matches = self.match_manager.all_matches()
+            for match in all_matches:
+                if match['team_a'] == old_name:
+                    self.match_manager.edit_match(match['id'], name, match['team_b'], match['goals_a'], match['goals_b'])
+                elif match['team_b'] == old_name:
+                    self.match_manager.edit_match(match['id'], match['team_a'], name, match['goals_a'], match['goals_b'])
+
             self.team_manager.edit_team(old_name, name, date, group)
             self.logging_manager.log(f"Edited team '{old_name}' to new name '{name}', registration date '{date}', and group number {group}.")
 
     def _edit_match(self):
         print("Enter match information (format: <Match ID> <Team A> <Team B> <Goals A> <Goals B>):")
+
+        matches = self.match_manager.all_matches()
+        for match in matches:
+            print(f"{match['id']}. {match['team_a']} vs {match['team_b']}: {match['goals_a']}-{match['goals_b']}")
+
         while True:
             line = input()
             if line == '':

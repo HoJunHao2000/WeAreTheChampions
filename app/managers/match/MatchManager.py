@@ -48,6 +48,14 @@ class MatchManager(IMatchManager):
             print(f"Match {match_id} updated successfully.")
         except RequestException as e:
             print(f"Failed to update match {match_id}. Error: {e}")
+    
+    def match_exists(self, match_id: int) -> bool:
+        """Checks if a match exists by making a GET request to the match service API."""
+        try:
+            response = requests.get(f"{self.match_service_url}/matches/{match_id}")
+            return response.status_code == 200
+        except RequestException as e:
+            return False
 
     def delete_all_matches(self):
         """Deletes all matches by making a DELETE request to the match service API."""

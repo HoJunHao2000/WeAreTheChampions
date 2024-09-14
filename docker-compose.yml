@@ -18,7 +18,7 @@ services:
     tty: true
     depends_on:
       - team_service
-      # - match_service
+      - match_service
       # - ranking_service
       # - log_service
 
@@ -33,16 +33,16 @@ services:
     depends_on:
       - team_db
 
-  # match_service:
-  #   build:
-  #     context: ./match_service
-  #   container_name: match_service
-  #   ports:
-  #     - "5002:5002"
-  #   environment:
-  #     DATABASE_URL: postgresql://match_db_user:match_db_password@match_db:5432/match_db  # Internal port
-  #   depends_on:
-  #     - match_db
+  match_service:
+    build:
+      context: ./match_service
+    container_name: match_service
+    ports:
+      - "5002:5002"
+    environment:
+      DATABASE_URL: postgresql://match_db_user:match_db_password@match_db:5432/match_db  # Internal port
+    depends_on:
+      - match_db
 
   # ranking_service:
   #   build:
@@ -74,17 +74,17 @@ services:
     ports:
       - "5433:5432"
 
-  # match_db:
-  #   image: postgres:13
-  #   container_name: match_db
-  #   environment:
-  #     POSTGRES_USER: match_db_user
-  #     POSTGRES_PASSWORD: match_db_password
-  #     POSTGRES_DB: match_db
-  #   volumes:
-  #     - match_db_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5434:5432"
+  match_db:
+    image: postgres:13
+    container_name: match_db
+    environment:
+      POSTGRES_USER: match_db_user
+      POSTGRES_PASSWORD: match_db_password
+      POSTGRES_DB: match_db
+    volumes:
+      - match_db_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
 
   # log_db:
   #   image: postgres:13
