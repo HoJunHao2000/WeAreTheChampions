@@ -17,8 +17,8 @@ class TeamManager(ITeamManager):
             "group": group
         }
         try:
+            print(self.team_service_url)
             response = requests.post(f"{self.team_service_url}/teams", json=payload)
-            response.raise_for_status()  # Will raise an HTTPError for bad responses (4xx, 5xx)
             print(f"Team '{name}' added successfully.")
         except RequestException as e:
             print(f"Failed to add team '{name}'. Error: {e}")
@@ -51,13 +51,9 @@ class TeamManager(ITeamManager):
         """Checks if a team exists by making a GET request to the team service API."""
         try:
             response = requests.get(f"{self.team_service_url}/teams/{name}")
-            if response.status_code == 200:
-                return True
-            elif response.status_code == 404:
-                return False
+            return response.status_code == 200
         except RequestException as e:
-            print(f"Error checking if team '{name}' exists: {e}")
-        return False
+            return False
 
     def is_same_group(self, name1: str, name2: str) -> bool:
         """Checks if two teams are in the same group by comparing their group info."""

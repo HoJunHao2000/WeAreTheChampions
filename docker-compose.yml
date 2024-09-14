@@ -8,11 +8,97 @@ services:
     ports:
       - "80:80"
     environment:
-      TEAM_SERVICE_URL: http://localhost:5000
-      MATCH_SERVICE_URL: http://localhost:5001
-      RANKING_SERVICE_URL: http://localhost:5002
-      LOG_SERVICE_URL: http://localhost:5003
+      TEAM_SERVICE_URL: http://team_service:5001
+      MATCH_SERVICE_URL: http://match_service:5002
+      RANKING_SERVICE_URL: http://ranking_service:5003
+      LOG_SERVICE_URL: http://log_service:5004
     volumes:
       - ./app:/app
-    stdin_open: true  # Enable interactive mode
-    tty: true  # Allocate a pseudo-TTY
+    stdin_open: true
+    tty: true
+    depends_on:
+      - team_service
+      # - match_service
+      # - ranking_service
+      # - log_service
+
+  team_service:
+    build:
+      context: ./team_service
+    container_name: team_service
+    ports:
+      - "5001:5001"
+    environment:
+      DATABASE_URL: postgresql://team_db_user:team_db_password@team_db:5432/team_db  # Use internal port 5432
+    depends_on:
+      - team_db
+
+  # match_service:
+  #   build:
+  #     context: ./match_service
+  #   container_name: match_service
+  #   ports:
+  #     - "5002:5002"
+  #   environment:
+  #     DATABASE_URL: postgresql://match_db_user:match_db_password@match_db:5432/match_db  # Internal port
+  #   depends_on:
+  #     - match_db
+
+  # ranking_service:
+  #   build:
+  #     context: ./ranking_service
+  #   container_name: ranking_service
+  #   ports:
+  #     - "5003:5003"
+
+  # log_service:
+  #   build:
+  #     context: ./log_service
+  #   container_name: log_service
+  #   ports:
+  #     - "5004:5004"
+  #   environment:
+  #     DATABASE_URL: postgresql://log_db_user:log_db_password@log_db:5432/log_db  # Internal port
+  #   depends_on:
+  #     - log_db
+
+  team_db:
+    image: postgres:13
+    container_name: team_db
+    environment:
+      POSTGRES_USER: team_db_user
+      POSTGRES_PASSWORD: team_db_password
+      POSTGRES_DB: team_db
+    volumes:
+      - team_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  # match_db:
+  #   image: postgres:13
+  #   container_name: match_db
+  #   environment:
+  #     POSTGRES_USER: match_db_user
+  #     POSTGRES_PASSWORD: match_db_password
+  #     POSTGRES_DB: match_db
+  #   volumes:
+  #     - match_db_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5434:5432"
+
+  # log_db:
+  #   image: postgres:13
+  #   container_name: log_db
+  #   environment:
+  #     POSTGRES_USER: log_db_user
+  #     POSTGRES_PASSWORD: log_db_password
+  #     POSTGRES_DB: log_db
+  #   volumes:
+  #     - log_db_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5435:5432"
+
+volumes:
+  team_db_data:
+  match_db_data:
+  log_db_data:
