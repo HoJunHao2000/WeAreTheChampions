@@ -32,6 +32,16 @@ class MatchManager(IMatchManager):
         except RequestException as e:
             print(f"Failed to retrieve matches. Error: {e}")
             return []
+        
+    def match_already_exists(self, team_a: str, team_b: str) -> bool:
+        """Checks if a match between two teams already exists by making a GET request to the match service API."""
+        try:
+            response = requests.get(f"{self.match_service_url}/matches/{team_a}/{team_b}")
+            response.raise_for_status()
+            return len(response.json()) > 0
+        except RequestException as e:
+            print(f"Failed to check if match between '{team_a}' and '{team_b}' exists. Error: {e}")
+            return False
 
     def edit_match(self, match_id: int, team_a: str, team_b: str, goals_a: int, goals_b: int):
         """Edits an existing match by making a PUT request to the match service API."""

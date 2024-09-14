@@ -28,6 +28,14 @@ def get_match(match_id: int, db: Session = Depends(get_db)):
     db_match = db.query(Match).filter(Match.id == match_id).first()
     return db_match
 
+@app.get("/matches/{team_a}/{team_b}", response_model=MatchResponse)
+def get_match_by_teams(team_a: str, team_b: str, db: Session = Depends(get_db)):
+    db_match = db.query(Match).filter(Match.team_a == team_a, Match.team_b == team_b).first()
+    db_match_2 = db.query(Match).filter(Match.team_a == team_b, Match.team_b == team_a).first()
+    if db_match is None and db_match_2 is None:
+        raise HTTPException(status_code=404, detail="Match not found")
+    return db_match if db_match else db_match_2
+
 @app.get("/matches", response_model=List[MatchResponse])
 def all_matches(db: Session = Depends(get_db)):
     return db.query(Match).all()
