@@ -1,11 +1,10 @@
 import os
 import requests
 from requests.exceptions import RequestException
-from app.managers.match import IMatchManager
+from managers.match.IMatchManager import IMatchManager
 
 class MatchManager(IMatchManager):
     def __init__(self):
-        # Retrieve the match_service_url from environment variables
         self.match_service_url = os.getenv('MATCH_SERVICE_URL')
         if not self.match_service_url:
             raise ValueError("MATCH_SERVICE_URL environment variable not set")

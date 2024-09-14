@@ -2,8 +2,7 @@ import os
 import requests
 from requests.exceptions import RequestException
 from datetime import datetime
-
-from app.managers.logging import ILoggingManager
+from managers.logging.ILoggingManager import ILoggingManager
 
 class LoggingManager(ILoggingManager):
     def __init__(self):

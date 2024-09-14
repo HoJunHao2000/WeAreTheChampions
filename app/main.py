@@ -1,10 +1,14 @@
 import os
 import sys
 
-from app.managers.logging import ILoggingManager, LoggingManager
-from app.managers.team import ITeamManager, TeamManager
-from app.managers.match import IMatchManager, MatchManager
-from app.managers.ranking import IRankingManager, RankingManager
+from managers.logging.ILoggingManager import ILoggingManager
+from managers.logging.LoggingManager import LoggingManager
+from managers.match.IMatchManager import IMatchManager
+from managers.match.MatchManager import MatchManager
+from managers.ranking.IRankingManager import IRankingManager
+from managers.ranking.RankingManager import RankingManager
+from managers.team.ITeamManager import ITeamManager
+from managers.team.TeamManager import TeamManager
 
 class TournamentApp:
     def __init__(
@@ -28,12 +32,12 @@ class TournamentApp:
             '5': self._edit_team,
             '6': self._edit_match,
             '7': self._clear_data,
-            '8': sys.exit()
+            '8': sys.exit
         }
 
         while True:
             self._clear_terminal()
-            print("\nOptions:")
+            print("Options:\n")
             print("1. Input Teams")
             print("2. Input Matches")
             print("3. Display Rankings")

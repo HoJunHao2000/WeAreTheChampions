@@ -1,8 +1,7 @@
 import os
 import requests
 from requests.exceptions import RequestException
-
-from app.managers.team import ITeamManager
+from managers.team.ITeamManager import ITeamManager
 
 class TeamManager(ITeamManager):
     def __init__(self):

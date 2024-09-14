@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./app
+    container_name: main_app
+    ports:
+      - "80:80"
+    environment:
+      TEAM_SERVICE_URL: http://localhost:5000
+      MATCH_SERVICE_URL: http://localhost:5001
+      RANKING_SERVICE_URL: http://localhost:5002
+      LOG_SERVICE_URL: http://localhost:5003
+    volumes:
+      - ./app:/app
+    stdin_open: true  # Enable interactive mode
+    tty: true  # Allocate a pseudo-TTY
