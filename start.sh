@@ -9,7 +9,7 @@ docker-compose build --no-cache
 
 # Build and start the Docker services
 echo "Starting Docker services..."
-docker-compose up --build -d
+docker-compose up -d
 
 # Attach to the main_app container
 echo "Attaching to the main_app container..."
